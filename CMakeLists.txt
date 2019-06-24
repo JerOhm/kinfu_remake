@@ -14,11 +14,17 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
 include(cmake/Utils.cmake)
 include(cmake/Targets.cmake)
 
+# -- [ this option causes problems for some reason, so turn it off before searching for CUDA
+if(MSVC)
+	# Setting this to true brakes Visual Studio builds.
+	set(CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE OFF CACHE BOOL "CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE")
+endif()
+
 # ---[ find dependencies
 find_package(OpenCV REQUIRED COMPONENTS core viz highgui)
 find_package(CUDA REQUIRED)
-find_package(OpenNI REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIR})
+find_package(OpenNI2 REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS} ${OPENNI2_INCLUDE_DIRS})
 
 # ---[ misc settings
 if(USE_PROJECT_FOLDERS)
@@ -29,9 +35,9 @@ endif()
 # ---[ cuda settings
 set(HAVE_CUDA 1)
 if (CUDA_VERSION_MAJOR GREATER 8)
-  list(APPEND CUDA_NVCC_FLAGS "-gencode;arch=compute_30,code=sm_30;-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_50,code=sm_50")
+  list(APPEND CUDA_NVCC_FLAGS "-gencode;arch=compute_30,code=sm_30;-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_61,code=sm_61")
 else()
-  list(APPEND CUDA_NVCC_FLAGS "-gencode;arch=compute_20,code=sm_20;-gencode;arch=compute_20,code=sm_21;-gencode;arch=compute_30,code=sm_30;-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_50,code=sm_50")
+  list(APPEND CUDA_NVCC_FLAGS "-gencode;arch=compute_20,code=sm_20;-gencode;arch=compute_20,code=sm_21;-gencode;arch=compute_30,code=sm_30;-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_61,code=sm_61")
 endif()
 
 if(UNIX OR APPLE)

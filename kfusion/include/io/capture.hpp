@@ -15,10 +15,10 @@ namespace kfusion
 
         OpenNISource();
         OpenNISource(int device);
-        OpenNISource(const std::string& oni_filename, bool repeat = false);
+        OpenNISource(const std::string& oni_filename);
 
         void open(int device);
-        void open(const std::string& oni_filename, bool repeat = false);
+        void open(const std::string& oni_filename);
         void release();
 
         ~OpenNISource();
